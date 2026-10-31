@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+id: devstral-24b
+name: Devstral Small 24B
+aliases: [devstral, devstral:24b]
+params_b: 23.6
+layers: 40
+kv_heads: 8
+head_dim: 128
+context_max: 131072
+hf_repo: mistralai/Devstral-Small-2505

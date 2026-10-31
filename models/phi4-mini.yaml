@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+id: phi4-mini
+name: Phi-4 Mini Instruct 3.8B
+aliases: [phi4-mini:3.8b]
+params_b: 3.84
+layers: 32
+kv_heads: 8
+head_dim: 128
+context_max: 131072
+hf_repo: microsoft/Phi-4-mini-instruct

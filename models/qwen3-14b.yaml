@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+id: qwen3-14b
+name: Qwen3 14B
+aliases: [qwen3:14b]
+params_b: 14.8
+layers: 40
+kv_heads: 8
+head_dim: 128
+context_max: 40960
+hf_repo: Qwen/Qwen3-14B

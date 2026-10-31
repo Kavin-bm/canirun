@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+# Note: MLA attention caches 576 values per token per layer (kv_lora_rank 512 + rope 64), encoded as kv_heads 1 x head_dim 288 (x2 for K and V).
+id: deepseek-r1-671b
+name: DeepSeek R1 / V3 671B (MoE)
+aliases: [deepseek-r1:671b, deepseek-v3, deepseek-v3:671b]
+params_b: 671
+active_params_b: 37
+layers: 61
+kv_heads: 1
+head_dim: 288
+context_max: 163840
+hf_repo: deepseek-ai/DeepSeek-R1

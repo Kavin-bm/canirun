@@ -1,5 +1,6 @@
+# yaml-language-server: $schema=schema.json
 # Architecture numbers from the model's config.json on Hugging Face.
-# Fix or add models by pull request (see CONTRIBUTING.md).
+# Note: sliding-window layers: real KV cache is smaller than estimated.
 id: gemma2-9b
 name: Gemma 2 9B Instruct
 aliases: [gemma2, gemma2:9b]

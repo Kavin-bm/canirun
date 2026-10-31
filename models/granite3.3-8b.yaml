@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+id: granite3.3-8b
+name: Granite 3.3 8B Instruct
+aliases: [granite3.3, granite3.3:8b]
+params_b: 8.17
+layers: 40
+kv_heads: 8
+head_dim: 128
+context_max: 131072
+hf_repo: ibm-granite/granite-3.3-8b-instruct

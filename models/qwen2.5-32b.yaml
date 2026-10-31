@@ -1,8 +1,8 @@
+# yaml-language-server: $schema=schema.json
 # Architecture numbers from the model's config.json on Hugging Face.
-# Fix or add models by pull request (see CONTRIBUTING.md).
 id: qwen2.5-32b
 name: Qwen2.5 32B Instruct
-aliases: [qwen2.5:32b, deepseek-r1:32b]
+aliases: [qwen2.5:32b]
 params_b: 32.8
 layers: 64
 kv_heads: 8

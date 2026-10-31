@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+id: qwen2.5-72b
+name: Qwen2.5 72B Instruct
+aliases: [qwen2.5:72b]
+params_b: 72.7
+layers: 80
+kv_heads: 8
+head_dim: 128
+context_max: 32768
+hf_repo: Qwen/Qwen2.5-72B-Instruct

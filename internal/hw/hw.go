@@ -17,19 +17,31 @@ import (
 
 // Info is the detected hardware. Byte sizes are 0 when unknown.
 type Info struct {
-	OS            string   `json:"os"`
-	Arch          string   `json:"arch"`
-	CPU           string   `json:"cpu,omitempty"`
-	Cores         int      `json:"cores"`
-	PerfCores     int      `json:"performance_cores,omitempty"`
-	EffCores      int      `json:"efficiency_cores,omitempty"`
-	RAMBytes      uint64   `json:"ram_bytes"`
-	GPU           string   `json:"gpu,omitempty"`
-	GPUCores      int      `json:"gpu_cores,omitempty"`
-	GPUMemBytes   uint64   `json:"gpu_memory_bytes,omitempty"`
-	UnifiedMemory bool     `json:"unified_memory"`
-	Notes         []string `json:"notes,omitempty"`
+	OS            string `json:"os"`
+	Arch          string `json:"arch"`
+	CPU           string `json:"cpu,omitempty"`
+	Cores         int    `json:"cores"`
+	PerfCores     int    `json:"performance_cores,omitempty"`
+	EffCores      int    `json:"efficiency_cores,omitempty"`
+	RAMBytes      uint64 `json:"ram_bytes"`
+	GPU           string `json:"gpu,omitempty"`
+	GPUCores      int    `json:"gpu_cores,omitempty"`
+	GPUMemBytes   uint64 `json:"gpu_memory_bytes,omitempty"`
+	UnifiedMemory bool   `json:"unified_memory"`
+	// GPUWiredLimitBytes is a user-raised Apple GPU memory limit
+	// (sysctl iogpu.wired_limit_mb); 0 means the macOS default.
+	GPUWiredLimitBytes uint64 `json:"gpu_wired_limit_bytes,omitempty"`
+	// Memory bandwidth drives the speed estimate. Source is "table" (known
+	// chip), "assumed" (typical value, chip unknown) or "override" (--bw).
+	GPUBandwidthGBps float64  `json:"gpu_bandwidth_gbps,omitempty"`
+	CPUBandwidthGBps float64  `json:"cpu_bandwidth_gbps"`
+	BandwidthSource  string   `json:"bandwidth_source"`
+	Notes            []string `json:"notes,omitempty"`
 }
+
+// minDiscreteVRAM filters out iGPU carve-outs (often 128-512 MB) that
+// would otherwise be treated as a discrete GPU.
+const minDiscreteVRAM = 2 << 30
 
 // Detect inspects the current machine. It never fails hard: anything it
 // can't read is left empty and noted.
@@ -40,10 +52,32 @@ func Detect() Info {
 		detectDarwin(&info)
 	case "linux":
 		detectLinux(&info)
+	case "windows":
+		detectWindows(&info)
 	default:
 		info.Notes = append(info.Notes, runtime.GOOS+" detection is coming soon; only OS, arch and core count are shown")
 	}
+	Finish(&info)
 	return info
+}
+
+// Finish applies the rules shared by every OS: drop iGPU carve-outs and
+// fill in memory bandwidth. Exported so callers can re-run it after
+// overriding fields (for "what if I had 24 GB VRAM?").
+func Finish(info *Info) {
+	if !info.UnifiedMemory && info.GPUMemBytes > 0 && info.GPUMemBytes < minDiscreteVRAM {
+		info.Notes = append(info.Notes, "GPU has under 2 GB of dedicated memory; treating this machine as CPU only")
+		info.GPUMemBytes = 0
+	}
+	if info.BandwidthSource == "override" {
+		return
+	}
+	gpuBW, cpuBW, known := Bandwidth(*info)
+	info.GPUBandwidthGBps, info.CPUBandwidthGBps = gpuBW, cpuBW
+	info.BandwidthSource = "assumed"
+	if known {
+		info.BandwidthSource = "table"
+	}
 }
 
 // cmdTimeout bounds every external probe: a wedged GPU driver can make
@@ -70,6 +104,9 @@ func detectDarwin(info *Info) {
 	info.PerfCores, _ = strconv.Atoi(sysctl("hw.perflevel0.physicalcpu"))
 	info.EffCores, _ = strconv.Atoi(sysctl("hw.perflevel1.physicalcpu"))
 	info.RAMBytes, _ = strconv.ParseUint(sysctl("hw.memsize"), 10, 64)
+	if mb, _ := strconv.ParseUint(sysctl("iogpu.wired_limit_mb"), 10, 64); mb > 0 {
+		info.GPUWiredLimitBytes = mb << 20
+	}
 	if out := run("system_profiler", "SPDisplaysDataType", "-json"); out != "" {
 		ParseSPDisplays([]byte(out), info)
 	}
@@ -130,6 +167,13 @@ func detectLinux(info *Info) {
 	if data, err := os.ReadFile("/proc/cpuinfo"); err == nil {
 		info.CPU = ParseCPUInfoModel(string(data))
 	}
+	if info.CPU == "" { // ARM /proc/cpuinfo has no "model name"
+		if n := ParseCPUInfoModel(strings.ReplaceAll(run("lscpu"), "Model name", "model name")); n != "" && n != "-" {
+			info.CPU = n
+		} else {
+			info.CPU = runtime.GOARCH + " CPU"
+		}
+	}
 	if out := run("nvidia-smi", "--query-gpu=name,memory.total", "--format=csv,noheader,nounits"); out != "" {
 		if name, mem, ok := ParseNvidiaSMI(out); ok {
 			info.GPU, info.GPUMemBytes = name, mem
@@ -148,6 +192,9 @@ func detectLinux(info *Info) {
 	}
 	if out := run("lspci"); out != "" {
 		info.GPU = ParseLspciGPU(out)
+	}
+	if info.GPU == "" && info.GPUMemBytes > 0 {
+		info.GPU = "AMD GPU"
 	}
 	if info.GPU == "" {
 		info.Notes = append(info.Notes, "no GPU detected; estimates assume CPU only")
@@ -215,17 +262,28 @@ func ParseNvidiaSMI(out string) (name string, mem uint64, ok bool) {
 	return name, mem, true
 }
 
-// ParseLspciGPU returns the first VGA/3D controller description.
+// ParseLspciGPU returns the VGA/3D/display controller description,
+// preferring a discrete (non-Intel) GPU over an integrated one.
 func ParseLspciGPU(out string) string {
+	first := ""
 	for _, line := range strings.Split(out, "\n") {
 		l := strings.ToLower(line)
-		if strings.Contains(l, "vga compatible controller") || strings.Contains(l, "3d controller") {
-			if _, v, ok := strings.Cut(line, "controller: "); ok {
-				return strings.TrimSpace(v)
-			}
+		if !strings.Contains(l, "vga compatible controller") && !strings.Contains(l, "3d controller") && !strings.Contains(l, "display controller") {
+			continue
+		}
+		_, v, ok := strings.Cut(line, "controller: ")
+		if !ok {
+			continue
+		}
+		v = strings.TrimSpace(v)
+		if !strings.HasPrefix(strings.ToLower(v), "intel") {
+			return v
+		}
+		if first == "" {
+			first = v
 		}
 	}
-	return ""
+	return first
 }
 
 // GiB formats bytes as GiB with one decimal.

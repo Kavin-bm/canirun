@@ -1,7 +1,7 @@
 // Package estimate does the memory math: weights + KV cache + overhead,
 // compared against what the machine can give the model.
 //
-// All results are ESTIMATES. Measured numbers (canirun bench) are coming soon.
+// All results are ESTIMATES. Measured numbers come from `canirun bench`.
 package estimate
 
 import (
@@ -60,6 +60,8 @@ type Result struct {
 	TotalBytes    uint64  `json:"total_bytes"`
 	Verdict       string  `json:"verdict"`
 	GPUFraction   float64 `json:"gpu_fraction"` // share of the model that fits in GPU memory
+	// TokensPerSec is the ESTIMATED generation speed at short context (0 if it won't run).
+	TokensPerSec float64 `json:"est_tokens_per_sec"`
 }
 
 // Budget is how much memory the machine can give a model.
@@ -67,7 +69,21 @@ type Budget struct {
 	GPUBytes   uint64 `json:"gpu_bytes"`   // fast memory (VRAM or GPU share of unified memory)
 	TotalBytes uint64 `json:"total_bytes"` // GPU + usable system RAM
 	Kind       string `json:"kind"`        // unified, discrete, cpu
+	// Memory bandwidth in GB/s, copied from hw.Info, for the speed estimate.
+	GPUBandwidthGBps float64 `json:"gpu_bandwidth_gbps"`
+	CPUBandwidthGBps float64 `json:"cpu_bandwidth_gbps"`
 }
+
+// Efficiency is the share of peak memory bandwidth llama.cpp-style runtimes
+// reach while generating. Calibrated from measured runs of Llama 3.2 3B
+// Q4_K_M on an M4 Pro (273 GB/s): Ollama 89-93 tok/s, llama-bench 94 tok/s,
+// against a 140 tok/s theoretical ceiling = 0.66.
+// CPUEfficiency is an assumption until community results calibrate it.
+// These are the calibration knobs: change them when measured data says so.
+var (
+	GPUEfficiency = 0.66
+	CPUEfficiency = 0.6
+)
 
 // WeightsBytes = params * bits / 8.
 func WeightsBytes(paramsB float64, q Quant) uint64 {
@@ -95,21 +111,54 @@ func OverheadBytes(weights uint64) uint64 {
 //     anything beyond that up to 85% of RAM can still run on the CPU.
 //   - Discrete GPU: 95% of VRAM, plus 70% of system RAM for offload.
 //   - CPU only: 70% of system RAM.
+//     A raised `iogpu.wired_limit_mb` replaces the default share.
 func BudgetFor(h hw.Info) Budget {
 	ram := float64(h.RAMBytes)
+	var b Budget
 	switch {
 	case h.UnifiedMemory:
 		frac := 2.0 / 3.0
 		if h.RAMBytes > 36*GiB {
 			frac = 0.75
 		}
-		return Budget{GPUBytes: uint64(ram * frac), TotalBytes: uint64(ram * 0.85), Kind: "unified"}
+		b = Budget{GPUBytes: uint64(ram * frac), TotalBytes: uint64(ram * 0.85), Kind: "unified"}
+		if h.GPUWiredLimitBytes > 0 && h.GPUWiredLimitBytes <= h.RAMBytes {
+			b.GPUBytes = h.GPUWiredLimitBytes
+			b.TotalBytes = max(b.TotalBytes, b.GPUBytes)
+		}
 	case h.GPUMemBytes > 0:
 		gpu := float64(h.GPUMemBytes) * 0.95
-		return Budget{GPUBytes: uint64(gpu), TotalBytes: uint64(gpu + ram*0.7), Kind: "discrete"}
+		b = Budget{GPUBytes: uint64(gpu), TotalBytes: uint64(gpu + ram*0.7), Kind: "discrete"}
 	default:
-		return Budget{TotalBytes: uint64(ram * 0.7), Kind: "cpu"}
+		b = Budget{TotalBytes: uint64(ram * 0.7), Kind: "cpu"}
 	}
+	b.GPUBandwidthGBps, b.CPUBandwidthGBps = h.GPUBandwidthGBps, h.CPUBandwidthGBps
+	return b
+}
+
+// TokensPerSec estimates generation speed. Each token reads every active
+// weight once, so time per token = bytes on GPU / GPU bandwidth + bytes on
+// CPU / CPU bandwidth, each scaled by measured efficiency. KV-cache reads are
+// ignored, so this is the speed at short context; long chats are slower.
+func TokensPerSec(m model.Model, q Quant, gpuFraction float64, b Budget) float64 {
+	bytes := float64(WeightsBytes(m.ActiveB(), q))
+	if bytes == 0 {
+		return 0
+	}
+	var sec float64
+	if gpuFraction > 0 {
+		if b.GPUBandwidthGBps <= 0 {
+			return 0
+		}
+		sec += bytes * gpuFraction / (b.GPUBandwidthGBps * 1e9 * GPUEfficiency)
+	}
+	if gpuFraction < 1 {
+		if b.CPUBandwidthGBps <= 0 {
+			return 0
+		}
+		sec += bytes * (1 - gpuFraction) / (b.CPUBandwidthGBps * 1e9 * CPUEfficiency)
+	}
+	return math.Round(10/sec) / 10
 }
 
 // Estimate computes one quantization at a context length.
@@ -130,6 +179,9 @@ func Estimate(m model.Model, q Quant, ctx int, b Budget) Result {
 	default:
 		r.Verdict = No
 	}
+	if r.Verdict != No {
+		r.TokensPerSec = TokensPerSec(m, q, r.GPUFraction, b)
+	}
 	return r
 }
 
@@ -142,15 +194,28 @@ func All(m model.Model, ctx int, b Budget) []Result {
 	return out
 }
 
-// Best picks the highest-quality quant that fits fully; else the best partial;
+// Best picks the highest-quality quant that fits fully in GPU memory, but
+// skips F16 when Q8_0 fits: Q8_0 is near-lossless at twice the speed. If
+// nothing fits, it picks the highest-quality partial (offload or CPU-only)
+// quant that still reaches a comfortable 10 tok/s, else the fastest partial.
 // ok is false when nothing runs.
 func Best(rs []Result) (Result, bool) {
-	for _, want := range []string{Fits, Partial} {
-		for _, r := range rs {
-			if r.Verdict == want {
-				return r, true
-			}
+	var fastest *Result
+	for i, r := range rs {
+		if r.Verdict == Fits && (r.Quant != "F16" || i == len(rs)-1 || rs[i+1].Verdict != Fits) {
+			return r, true
 		}
+		if r.Verdict == Partial && (fastest == nil || r.TokensPerSec > fastest.TokensPerSec) {
+			fastest = &rs[i]
+		}
+	}
+	for _, r := range rs {
+		if r.Verdict == Partial && r.TokensPerSec >= 10 {
+			return r, true
+		}
+	}
+	if fastest != nil {
+		return *fastest, true
 	}
 	return Result{}, false
 }

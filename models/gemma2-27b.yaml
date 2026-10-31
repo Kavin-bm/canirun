@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+# Note: sliding-window layers: real KV cache is smaller than estimated.
+id: gemma2-27b
+name: Gemma 2 27B Instruct
+aliases: [gemma2:27b]
+params_b: 27.2
+layers: 46
+kv_heads: 16
+head_dim: 128
+context_max: 8192
+hf_repo: google/gemma-2-27b-it

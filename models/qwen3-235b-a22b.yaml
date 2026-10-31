@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+id: qwen3-235b-a22b
+name: Qwen3 235B-A22B (MoE)
+aliases: [qwen3:235b, qwen3:235b-a22b]
+params_b: 235.1
+active_params_b: 22
+layers: 94
+kv_heads: 4
+head_dim: 128
+context_max: 40960
+hf_repo: Qwen/Qwen3-235B-A22B

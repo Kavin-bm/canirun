@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+id: mistral-nemo-12b
+name: Mistral Nemo 12B Instruct
+aliases: [mistral-nemo, mistral-nemo:12b]
+params_b: 12.2
+layers: 40
+kv_heads: 8
+head_dim: 128
+context_max: 131072
+hf_repo: mistralai/Mistral-Nemo-Instruct-2407

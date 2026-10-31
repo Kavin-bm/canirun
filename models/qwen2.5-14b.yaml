@@ -1,5 +1,5 @@
+# yaml-language-server: $schema=schema.json
 # Architecture numbers from the model's config.json on Hugging Face.
-# Fix or add models by pull request (see CONTRIBUTING.md).
 id: qwen2.5-14b
 name: Qwen2.5 14B Instruct
 aliases: [qwen2.5:14b]

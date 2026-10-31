@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+# Note: ships in MXFP4 (~65 GB), close to the Q4_K_M row; half the layers use a 128-token sliding window.
+id: gpt-oss-120b
+name: gpt-oss 120B (MoE)
+aliases: [gpt-oss:120b]
+params_b: 116.8
+active_params_b: 5.1
+layers: 36
+kv_heads: 8
+head_dim: 64
+context_max: 131072
+hf_repo: openai/gpt-oss-120b

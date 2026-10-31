@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+id: qwq-32b
+name: QwQ 32B
+aliases: [qwq, qwq:32b]
+params_b: 32.8
+layers: 64
+kv_heads: 8
+head_dim: 128
+context_max: 40960
+hf_repo: Qwen/QwQ-32B

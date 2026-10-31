@@ -1,5 +1,5 @@
+# yaml-language-server: $schema=schema.json
 # Architecture numbers from the model's config.json on Hugging Face.
-# Fix or add models by pull request (see CONTRIBUTING.md).
 id: llama3.2-3b
 name: Llama 3.2 3B Instruct
 aliases: [llama3.2, llama3.2:3b, llama-3.2-3b]

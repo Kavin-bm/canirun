@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+id: mixtral-8x7b
+name: Mixtral 8x7B Instruct (MoE)
+aliases: [mixtral, mixtral:8x7b]
+params_b: 46.7
+active_params_b: 12.9
+layers: 32
+kv_heads: 8
+head_dim: 128
+context_max: 32768
+hf_repo: mistralai/Mixtral-8x7B-Instruct-v0.1

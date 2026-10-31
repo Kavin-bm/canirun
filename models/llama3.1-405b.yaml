@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+id: llama3.1-405b
+name: Llama 3.1 405B Instruct
+aliases: [llama3.1:405b, llama-3.1-405b]
+params_b: 405.9
+layers: 126
+kv_heads: 8
+head_dim: 128
+context_max: 131072
+hf_repo: meta-llama/Llama-3.1-405B-Instruct

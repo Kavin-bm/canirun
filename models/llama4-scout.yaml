@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+id: llama4-scout
+name: Llama 4 Scout 17B-16E (MoE)
+aliases: [llama4, llama4:scout, llama4:16x17b, llama-4-scout]
+params_b: 108.6
+active_params_b: 17
+layers: 48
+kv_heads: 8
+head_dim: 128
+context_max: 10485760
+hf_repo: meta-llama/Llama-4-Scout-17B-16E-Instruct

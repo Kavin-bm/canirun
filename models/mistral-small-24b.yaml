@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+id: mistral-small-24b
+name: Mistral Small 3.1 24B Instruct
+aliases: [mistral-small, mistral-small:24b, mistral-small3.1, mistral-small3.2]
+params_b: 24
+layers: 40
+kv_heads: 8
+head_dim: 128
+context_max: 131072
+hf_repo: mistralai/Mistral-Small-3.1-24B-Instruct-2503

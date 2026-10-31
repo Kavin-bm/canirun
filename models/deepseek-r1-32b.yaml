@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+id: deepseek-r1-32b
+name: DeepSeek R1 Distill Qwen 32B
+aliases: [deepseek-r1:32b]
+params_b: 32.8
+layers: 64
+kv_heads: 8
+head_dim: 128
+context_max: 131072
+hf_repo: deepseek-ai/DeepSeek-R1-Distill-Qwen-32B

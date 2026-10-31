@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+# Note: Ollama's deepseek-r1:8b moved from the Llama 8B distill to this Qwen3 8B distill; sizes are nearly identical.
+id: deepseek-r1-8b
+name: DeepSeek R1 0528 Qwen3 8B
+aliases: [deepseek-r1, deepseek-r1:8b]
+params_b: 8.19
+layers: 36
+kv_heads: 8
+head_dim: 128
+context_max: 131072
+hf_repo: deepseek-ai/DeepSeek-R1-0528-Qwen3-8B

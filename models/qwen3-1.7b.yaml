@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+# Note: params_b counts tied embeddings (1.7B advertised).
+id: qwen3-1.7b
+name: Qwen3 1.7B
+aliases: [qwen3:1.7b]
+params_b: 2.03
+layers: 28
+kv_heads: 8
+head_dim: 128
+context_max: 40960
+hf_repo: Qwen/Qwen3-1.7B

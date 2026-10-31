@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/kavinbm/canirun/internal/hw"
+	"github.com/kavinbm/canirun/internal/report"
 )
 
 const gib = 1 << 30
@@ -40,6 +41,11 @@ func TestExitCodes(t *testing.T) {
 		{[]string{"hw", "extra"}, exitUsage},
 		{[]string{"recommend", "--json"}, exitOK},
 		{[]string{"version"}, exitOK},
+		{[]string{"--json", "llama3.1:8b"}, exitOK},
+		{[]string{"llama3.3:70b", "--ram", "128"}, exitOK},
+		{[]string{"llama3.1:8b", "--ram", "-4"}, exitUsage},
+		{[]string{"validate"}, exitOK},
+		{[]string{"bench", "--runs", "0"}, exitUsage},
 	}
 	for _, c := range cases {
 		if got, _, _ := runCLI(c.args...); got != c.want {
@@ -71,11 +77,31 @@ func TestUnknownRAMIsAnErrorNotANo(t *testing.T) {
 func TestEstimateJSON(t *testing.T) {
 	fakeHW(t, hw.Info{RAMBytes: 32 * gib, GPUMemBytes: 8 * gib, GPU: "RTX 3070"})
 	code, out, _ := runCLI("llama3.1:8b", "--json", "--quant", "q4_k_m")
-	var v estimateOutput
+	var v report.Estimate
 	if err := json.Unmarshal([]byte(out), &v); err != nil {
 		t.Fatal(err)
 	}
 	if code != exitOK || v.Label != "ESTIMATE" || len(v.Results) != 1 || v.Verdict != "fits" {
 		t.Fatalf("code %d, %+v", code, v)
+	}
+}
+
+func TestWhatIfOverrides(t *testing.T) {
+	fakeHW(t, hw.Info{OS: "linux", RAMBytes: 16 * gib, CPU: "Ryzen", CPUBandwidthGBps: 50, BandwidthSource: "assumed"})
+	code, out, _ := runCLI("llama3.1:8b", "--vram", "24", "--bw", "1008", "--json", "--quant", "Q4_K_M")
+	var v report.Estimate
+	if err := json.Unmarshal([]byte(out), &v); err != nil || code != exitOK {
+		t.Fatalf("%d %v %s", code, err, out)
+	}
+	if v.Verdict != "fits" || v.Hardware.GPUBandwidthGBps != 1008 || v.Results[0].TokensPerSec < 100 {
+		t.Fatalf("override not applied: %+v", v.Results)
+	}
+}
+
+func TestBenchNoOllama(t *testing.T) {
+	fakeHW(t, hw.Info{RAMBytes: 16 * gib})
+	t.Setenv("OLLAMA_HOST", "127.0.0.1:1")
+	if code, _, _ := runCLI("bench", "llama3.2"); code != exitNoRuntime {
+		t.Fatalf("exit %d, want %d", code, exitNoRuntime)
 	}
 }

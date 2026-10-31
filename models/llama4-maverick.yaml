@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+id: llama4-maverick
+name: Llama 4 Maverick 17B-128E (MoE)
+aliases: [llama4:maverick, llama4:128x17b, llama-4-maverick]
+params_b: 401.6
+active_params_b: 17
+layers: 48
+kv_heads: 8
+head_dim: 128
+context_max: 1048576
+hf_repo: meta-llama/Llama-4-Maverick-17B-128E-Instruct

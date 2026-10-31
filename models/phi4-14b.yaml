@@ -1,5 +1,5 @@
+# yaml-language-server: $schema=schema.json
 # Architecture numbers from the model's config.json on Hugging Face.
-# Fix or add models by pull request (see CONTRIBUTING.md).
 id: phi4-14b
 name: Phi-4 14B
 aliases: [phi4, phi4:14b, phi-4]

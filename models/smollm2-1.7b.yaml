@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=schema.json
+# Architecture numbers from the model's config.json on Hugging Face.
+id: smollm2-1.7b
+name: SmolLM2 1.7B Instruct
+aliases: [smollm2, smollm2:1.7b]
+params_b: 1.71
+layers: 24
+kv_heads: 32
+head_dim: 64
+context_max: 8192
+hf_repo: HuggingFaceTB/SmolLM2-1.7B-Instruct

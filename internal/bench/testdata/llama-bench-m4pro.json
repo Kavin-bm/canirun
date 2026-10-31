@@ -1,0 +1,56 @@
+[
+ {
+  "build_commit": "8642541b2",
+  "build_number": 11960,
+  "cpu_info": "Accelerate, Apple M4 Pro",
+  "gpu_info": "Apple M4 Pro",
+  "backends": "BLAS,MTL",
+  "model_filename": "llama3.2-3b-q4_k_m.gguf",
+  "model_type": "llama 3B Q4_K - Medium",
+  "model_size": 2011539712,
+  "model_n_params": 3212749888,
+  "n_gpu_layers": -1,
+  "n_prompt": 512,
+  "n_gen": 0,
+  "avg_ns": 580287472,
+  "avg_ts": 882.544642,
+  "stddev_ts": 17.10387,
+  "samples_ns": [
+   593329375,
+   575037375,
+   572495667
+  ],
+  "samples_ts": [
+   862.927,
+   890.377,
+   894.33
+  ]
+ },
+ {
+  "build_commit": "8642541b2",
+  "build_number": 11960,
+  "cpu_info": "Accelerate, Apple M4 Pro",
+  "gpu_info": "Apple M4 Pro",
+  "backends": "BLAS,MTL",
+  "model_filename": "llama3.2-3b-q4_k_m.gguf",
+  "model_type": "llama 3B Q4_K - Medium",
+  "model_size": 2011539712,
+  "model_n_params": 3212749888,
+  "n_gpu_layers": -1,
+  "n_prompt": 0,
+  "n_gen": 128,
+  "avg_ns": 1361542111,
+  "avg_ts": 94.012639,
+  "stddev_ts": 0.473702,
+  "samples_ns": [
+   1354895416,
+   1361127417,
+   1368603500
+  ],
+  "samples_ts": [
+   94.4722,
+   94.0397,
+   93.526
+  ]
+ }
+]
