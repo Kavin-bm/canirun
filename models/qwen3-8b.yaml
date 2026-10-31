@@ -1,0 +1,11 @@
+# Architecture numbers from the model's config.json on Hugging Face.
+# Fix or add models by pull request (see CONTRIBUTING.md).
+id: qwen3-8b
+name: Qwen3 8B
+aliases: [qwen3, qwen3:8b]
+params_b: 8.19
+layers: 36
+kv_heads: 8
+head_dim: 128
+context_max: 32768
+hf_repo: Qwen/Qwen3-8B

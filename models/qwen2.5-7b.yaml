@@ -1,0 +1,11 @@
+# Architecture numbers from the model's config.json on Hugging Face.
+# Fix or add models by pull request (see CONTRIBUTING.md).
+id: qwen2.5-7b
+name: Qwen2.5 7B Instruct
+aliases: [qwen2.5, qwen2.5:7b]
+params_b: 7.62
+layers: 28
+kv_heads: 4
+head_dim: 128
+context_max: 32768
+hf_repo: Qwen/Qwen2.5-7B-Instruct

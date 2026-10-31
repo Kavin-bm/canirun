@@ -1,0 +1,11 @@
+# Architecture numbers from the model's config.json on Hugging Face.
+# Fix or add models by pull request (see CONTRIBUTING.md).
+id: qwen2.5-14b
+name: Qwen2.5 14B Instruct
+aliases: [qwen2.5:14b]
+params_b: 14.7
+layers: 48
+kv_heads: 8
+head_dim: 128
+context_max: 32768
+hf_repo: Qwen/Qwen2.5-14B-Instruct

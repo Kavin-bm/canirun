@@ -1,0 +1,11 @@
+# Architecture numbers from the model's config.json on Hugging Face.
+# Fix or add models by pull request (see CONTRIBUTING.md).
+id: llama3.1-8b
+name: Llama 3.1 8B Instruct
+aliases: [llama3.1, llama3.1:8b, llama-3.1-8b]
+params_b: 8.03
+layers: 32
+kv_heads: 8
+head_dim: 128
+context_max: 131072
+hf_repo: meta-llama/Llama-3.1-8B-Instruct

@@ -1,0 +1,17 @@
+# Binaries
+/bin/
+/dist/
+/canirun
+*.exe
+*.test
+*.out
+coverage.*
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local env
+.env

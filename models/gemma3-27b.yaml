@@ -1,0 +1,11 @@
+# Architecture numbers from the model's config.json on Hugging Face.
+# Fix or add models by pull request (see CONTRIBUTING.md).
+id: gemma3-27b
+name: Gemma 3 27B Instruct
+aliases: [gemma3:27b]
+params_b: 27.4
+layers: 62
+kv_heads: 16
+head_dim: 128
+context_max: 131072
+hf_repo: google/gemma-3-27b-it

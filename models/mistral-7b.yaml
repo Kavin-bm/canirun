@@ -1,0 +1,11 @@
+# Architecture numbers from the model's config.json on Hugging Face.
+# Fix or add models by pull request (see CONTRIBUTING.md).
+id: mistral-7b
+name: Mistral 7B Instruct v0.3
+aliases: [mistral, mistral:7b]
+params_b: 7.25
+layers: 32
+kv_heads: 8
+head_dim: 128
+context_max: 32768
+hf_repo: mistralai/Mistral-7B-Instruct-v0.3

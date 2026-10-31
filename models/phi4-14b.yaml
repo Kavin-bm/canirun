@@ -1,0 +1,11 @@
+# Architecture numbers from the model's config.json on Hugging Face.
+# Fix or add models by pull request (see CONTRIBUTING.md).
+id: phi4-14b
+name: Phi-4 14B
+aliases: [phi4, phi4:14b, phi-4]
+params_b: 14.7
+layers: 40
+kv_heads: 10
+head_dim: 128
+context_max: 16384
+hf_repo: microsoft/phi-4
