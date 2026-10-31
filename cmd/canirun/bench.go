@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/kavinbm/canirun/internal/bench"
-	"github.com/kavinbm/canirun/internal/report"
+	"github.com/kavinbm16/canirun/internal/bench"
+	"github.com/kavinbm16/canirun/internal/report"
 )
 
 // newOllama is swapped out in tests.

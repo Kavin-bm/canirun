@@ -7,8 +7,8 @@ package estimate
 import (
 	"math"
 
-	"github.com/kavinbm/canirun/internal/hw"
-	"github.com/kavinbm/canirun/internal/model"
+	"github.com/kavinbm16/canirun/internal/hw"
+	"github.com/kavinbm16/canirun/internal/model"
 )
 
 // Quant is a llama.cpp/GGUF quantization type.

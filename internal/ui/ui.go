@@ -15,11 +15,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kavinbm/canirun/internal/bench"
-	"github.com/kavinbm/canirun/internal/estimate"
-	"github.com/kavinbm/canirun/internal/hw"
-	"github.com/kavinbm/canirun/internal/model"
-	"github.com/kavinbm/canirun/internal/report"
+	"github.com/kavinbm16/canirun/internal/bench"
+	"github.com/kavinbm16/canirun/internal/estimate"
+	"github.com/kavinbm16/canirun/internal/hw"
+	"github.com/kavinbm16/canirun/internal/model"
+	"github.com/kavinbm16/canirun/internal/report"
 )
 
 //go:embed static

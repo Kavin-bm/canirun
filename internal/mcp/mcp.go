@@ -12,10 +12,10 @@ import (
 	"io"
 	"time"
 
-	"github.com/kavinbm/canirun/internal/bench"
-	"github.com/kavinbm/canirun/internal/hw"
-	"github.com/kavinbm/canirun/internal/model"
-	"github.com/kavinbm/canirun/internal/report"
+	"github.com/kavinbm16/canirun/internal/bench"
+	"github.com/kavinbm16/canirun/internal/hw"
+	"github.com/kavinbm16/canirun/internal/model"
+	"github.com/kavinbm16/canirun/internal/report"
 )
 
 // Server answers MCP requests. Detect and Ollama are injectable for tests.

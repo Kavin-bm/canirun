@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/kavinbm/canirun/models"
+	"github.com/kavinbm16/canirun/models"
 )
 
 // Model is the architecture info needed for the memory estimate.

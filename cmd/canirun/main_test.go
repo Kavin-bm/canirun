@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/kavinbm/canirun/internal/hw"
-	"github.com/kavinbm/canirun/internal/report"
+	"github.com/kavinbm16/canirun/internal/hw"
+	"github.com/kavinbm16/canirun/internal/report"
 )
 
 const gib = 1 << 30

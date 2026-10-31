@@ -25,7 +25,7 @@ some setups, or breaks scripts/agents; **Low** = polish, naming, dead code.
 | 7 | Medium | With `--json`, errors were plain text on stderr, so agents could not parse failures. | Fixed: `{"error", "exit_code"}` JSON on stdout; tested. |
 | 8 | Medium | `main` called `os.Exit` from deep inside flag parsing and wrote straight to `os.Stdout`, so the CLI had zero tests. | Fixed: `run(args, stdout, stderr) int` with table tests for every exit code. |
 | 9 | Medium | Model YAML parser silently ignored unknown keys, so a typo (`kv_head`, `contxt_max`) in a community PR was dropped without error. | Fixed: unknown keys are an error; test added. |
-| 10 | Medium | README quick start claimed `go run github.com/kavinbm/canirun/...@latest` works, but the module path is a placeholder and the repo is not published. | Fixed in the phase 5 README (marked as available after the first release). |
+| 10 | Medium | README quick start claimed `go run github.com/kavinbm16/canirun/...@latest` works, but the module path is a placeholder and the repo is not published. | Fixed in the phase 5 README (marked as available after the first release). |
 | 11 | Low | `canirun 0b` built a 0-parameter model that "fits". | Fixed: sizes must be > 0 and <= 10000B. |
 | 12 | Low | A partial-offload GPU share was rounded, so 99.6% printed as "~100% on GPU" next to a "partial" verdict. | Fixed: floor instead of round. |
 | 13 | Low | `--ctx` above the model's `context_max` was accepted silently. | Fixed: warning in text and JSON. |

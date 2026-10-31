@@ -11,10 +11,10 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/kavinbm/canirun/internal/estimate"
-	"github.com/kavinbm/canirun/internal/hw"
-	"github.com/kavinbm/canirun/internal/model"
-	"github.com/kavinbm/canirun/internal/report"
+	"github.com/kavinbm16/canirun/internal/estimate"
+	"github.com/kavinbm16/canirun/internal/hw"
+	"github.com/kavinbm16/canirun/internal/model"
+	"github.com/kavinbm16/canirun/internal/report"
 )
 
 var version = "0.1.0-dev" // overridden by -ldflags at release time

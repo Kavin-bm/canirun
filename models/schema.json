@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/kavinbm/canirun/models/schema.json",
+  "$id": "https://github.com/kavinbm16/canirun/models/schema.json",
   "title": "canirun model catalog entry",
   "description": "One file per model in models/<id>.yaml. Flat key: value only (no nesting). Numbers come from the model's config.json on Hugging Face. Check with: canirun validate models/<id>.yaml",
   "type": "object",

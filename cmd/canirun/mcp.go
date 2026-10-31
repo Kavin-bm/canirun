@@ -4,7 +4,7 @@ import (
 	"io"
 	"sync"
 
-	"github.com/kavinbm/canirun/internal/mcp"
+	"github.com/kavinbm16/canirun/internal/mcp"
 )
 
 // runMCP serves the Model Context Protocol on stdin/stdout.

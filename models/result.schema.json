@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/kavinbm/canirun/models/result.schema.json",
+  "$id": "https://github.com/kavinbm16/canirun/models/result.schema.json",
   "title": "canirun measured benchmark result",
   "description": "One file per measurement in models/results/. Generate it with: canirun bench <model> --save. Check with: canirun validate models/results/<file>.yaml",
   "type": "object",

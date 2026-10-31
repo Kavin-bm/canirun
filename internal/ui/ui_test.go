@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/kavinbm/canirun/internal/bench"
-	"github.com/kavinbm/canirun/internal/hw"
+	"github.com/kavinbm16/canirun/internal/bench"
+	"github.com/kavinbm16/canirun/internal/hw"
 )
 
 func testServer() http.Handler {

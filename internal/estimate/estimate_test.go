@@ -4,8 +4,8 @@ import (
 	"math"
 	"testing"
 
-	"github.com/kavinbm/canirun/internal/hw"
-	"github.com/kavinbm/canirun/internal/model"
+	"github.com/kavinbm16/canirun/internal/hw"
+	"github.com/kavinbm16/canirun/internal/model"
 )
 
 var llama8b = model.Model{ID: "llama3.1-8b", ParamsB: 8.03, Layers: 32, KVHeads: 8, HeadDim: 128}

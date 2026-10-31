@@ -8,7 +8,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/kavinbm/canirun/internal/ui"
+	"github.com/kavinbm16/canirun/internal/ui"
 )
 
 func runUI(args []string, w io.Writer) error {

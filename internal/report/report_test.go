@@ -5,9 +5,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/kavinbm/canirun/internal/bench"
-	"github.com/kavinbm/canirun/internal/hw"
-	"github.com/kavinbm/canirun/internal/model"
+	"github.com/kavinbm16/canirun/internal/bench"
+	"github.com/kavinbm16/canirun/internal/hw"
+	"github.com/kavinbm16/canirun/internal/model"
 )
 
 var m4pro = hw.Info{RAMBytes: 24 << 30, UnifiedMemory: true, GPU: "Apple M4 Pro", GPUBandwidthGBps: 273, CPUBandwidthGBps: 136, BandwidthSource: "table"}

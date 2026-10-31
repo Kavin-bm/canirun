@@ -41,7 +41,7 @@ Built for agents too: `--json` everywhere, stable exit codes, and an MCP server.
 **6/**
 50 models today. The catalog and benchmark results are plain YAML, so if you run `canirun bench --save` and open a PR, your GPU's real numbers help everyone.
 
-⭐ github.com/kavinbm/canirun
+⭐ github.com/kavinbm16/canirun
 [image: docs/screenshots/share-card.png]
 
 ---
@@ -79,4 +79,4 @@ submit `canirun bench --save` results, which are plain YAML in the repo.
 I'd love feedback on the estimate math, and benchmark results from hardware I don't have
 (especially Windows + AMD and multi-GPU Linux).
 
-https://github.com/kavinbm/canirun
+https://github.com/kavinbm16/canirun
