@@ -1,0 +1,53 @@
+# Release config. Dry run locally: goreleaser release --snapshot --clean
+version: 2
+
+project_name: canirun
+
+before:
+  hooks:
+    - go mod tidy
+    - go test ./...
+
+builds:
+  - main: ./cmd/canirun
+    env: [CGO_ENABLED=0]
+    goos: [darwin, linux, windows]
+    goarch: [amd64, arm64]
+    flags: [-trimpath]
+    ldflags: ["-s -w -X main.version={{.Version}}"]
+
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files: [LICENSE, README.md]
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  use: git
+  sort: asc
+  filters:
+    exclude: ["^docs:", "^test:", "^chore:"]
+
+# brew install kavinbm/tap/canirun
+# Needs a GitHub repo kavinbm/homebrew-tap and a HOMEBREW_TAP_TOKEN secret.
+homebrew_casks:
+  - name: canirun
+    repository:
+      owner: kavinbm
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    homepage: https://github.com/kavinbm/canirun
+    description: Will this LLM run on my machine, and how fast? Check before you download.
+    license: MIT
+    binaries: [canirun]
+
+release:
+  github:
+    owner: kavinbm
+    name: canirun
+  draft: true

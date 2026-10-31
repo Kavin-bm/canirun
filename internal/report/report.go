@@ -205,6 +205,9 @@ func Validate(paths []string) []error {
 		if !ids[r.Model] {
 			errs = append(errs, fmt.Errorf("%s: model %q is not in the catalog", where, r.Model))
 		}
+		if r.Runtime != "ollama" && r.Runtime != "llama.cpp" {
+			errs = append(errs, fmt.Errorf("%s: runtime %q must be ollama or llama.cpp", where, r.Runtime))
+		}
 		if _, ok := estimate.QuantByName(r.Quant); !ok {
 			errs = append(errs, fmt.Errorf("%s: quant %q is not one of F16, Q8_0, Q5_K_M, Q4_K_M", where, r.Quant))
 		}

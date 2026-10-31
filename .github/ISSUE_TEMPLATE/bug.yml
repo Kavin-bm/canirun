@@ -1,0 +1,26 @@
+name: Bug or wrong estimate
+description: Something broke, or an estimate is far from what you measured
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: input
+    id: cmd
+    attributes:
+      label: Command you ran
+      placeholder: canirun qwen3:14b
+  - type: textarea
+    id: hw
+    attributes:
+      label: Output of `canirun hw --json`
+      render: json
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Output of `canirun version`

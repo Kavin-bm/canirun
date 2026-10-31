@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kavinbm/canirun/models/schema.json",
+  "title": "canirun model catalog entry",
+  "description": "One file per model in models/<id>.yaml. Flat key: value only (no nesting). Numbers come from the model's config.json on Hugging Face. Check with: canirun validate models/<id>.yaml",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "params_b", "layers", "kv_heads", "head_dim"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$", "description": "Unique id, also the file name (models/<id>.yaml)" },
+    "name": { "type": "string", "description": "Human name, e.g. Llama 3.1 8B Instruct" },
+    "aliases": { "type": "array", "items": { "type": "string" }, "uniqueItems": true, "description": "Names people type, e.g. Ollama tags like llama3.1:8b. Must be unique across the catalog." },
+    "params_b": { "type": "number", "exclusiveMinimum": 0, "maximum": 10000, "description": "Total parameters in billions (HF safetensors total)" },
+    "active_params_b": { "type": "number", "exclusiveMinimum": 0, "description": "Mixture-of-experts only: parameters read per token, in billions" },
+    "layers": { "type": "integer", "minimum": 1, "maximum": 500, "description": "config.json num_hidden_layers" },
+    "kv_heads": { "type": "integer", "minimum": 1, "maximum": 256, "description": "config.json num_key_value_heads (num_attention_heads if absent)" },
+    "head_dim": { "type": "integer", "minimum": 1, "maximum": 1024, "description": "config.json head_dim, else hidden_size / num_attention_heads" },
+    "context_max": { "type": "integer", "minimum": 1, "description": "config.json max_position_embeddings" },
+    "hf_repo": { "type": "string", "pattern": "^[^/]+/[^/]+$", "description": "Hugging Face repo, e.g. meta-llama/Llama-3.1-8B-Instruct" }
+  }
+}

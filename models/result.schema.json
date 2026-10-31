@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kavinbm/canirun/models/result.schema.json",
+  "title": "canirun measured benchmark result",
+  "description": "One file per measurement in models/results/. Generate it with: canirun bench <model> --save. Check with: canirun validate models/results/<file>.yaml",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["model", "quant", "chip", "runtime", "gen_tps"],
+  "properties": {
+    "model": { "type": "string", "description": "Catalog id from models/*.yaml" },
+    "quant": { "type": "string", "enum": ["F16", "Q8_0", "Q5_K_M", "Q4_K_M"] },
+    "chip": { "type": "string", "description": "GPU or Apple chip as `canirun hw` prints it" },
+    "ram_gb": { "type": "number", "minimum": 0 },
+    "runtime": { "type": "string", "enum": ["ollama", "llama.cpp"] },
+    "runtime_version": { "type": "string" },
+    "gen_tps": { "type": "number", "exclusiveMinimum": 0, "maximum": 5000, "description": "MEASURED generation tokens/sec" },
+    "prompt_tps": { "type": "number", "minimum": 0, "description": "MEASURED prompt processing tokens/sec" },
+    "gpu_share": { "type": "number", "minimum": 0, "maximum": 1 },
+    "date": { "type": "string", "format": "date" },
+    "canirun_version": { "type": "string" }
+  }
+}

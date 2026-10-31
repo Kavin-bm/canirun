@@ -1,0 +1,26 @@
+name: Share a benchmark result
+description: Post a MEASURED result from `canirun bench --save` (a PR is even better)
+labels: [results]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Run `canirun bench <ollama-model> --save` and paste the generated YAML file below, or open a PR that adds it to `models/results/`.
+  - type: textarea
+    id: result
+    attributes:
+      label: Result file
+      render: yaml
+      placeholder: |
+        model: llama3.2-3b
+        quant: Q4_K_M
+        chip: Apple M4 Pro
+        runtime: ollama
+        gen_tps: 88.8
+    validations:
+      required: true
+  - type: textarea
+    id: hw
+    attributes:
+      label: Output of `canirun hw`
+      render: text

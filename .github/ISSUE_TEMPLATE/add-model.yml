@@ -1,0 +1,26 @@
+name: Add a model
+description: Ask for a model to be added to the catalog (or add it yourself in 2 minutes)
+labels: [catalog]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fastest path: copy any file in `models/`, fill in five numbers from the model's `config.json`, run `canirun validate models/<id>.yaml`, and open a PR. See CONTRIBUTING.md.
+  - type: input
+    id: hf
+    attributes:
+      label: Hugging Face repo
+      placeholder: Qwen/Qwen3-8B
+    validations:
+      required: true
+  - type: input
+    id: ollama
+    attributes:
+      label: Ollama tag(s), if any
+      placeholder: qwen3:8b
+  - type: checkboxes
+    id: pr
+    attributes:
+      label: Will you open the PR?
+      options:
+        - label: Yes, I'll add the YAML file myself
