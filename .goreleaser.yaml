@@ -33,15 +33,15 @@ changelog:
   filters:
     exclude: ["^docs:", "^test:", "^chore:"]
 
-# brew install kavinbm16/tap/canirun
-# Needs a GitHub repo kavinbm16/homebrew-tap and a HOMEBREW_TAP_TOKEN secret.
+# brew install Kavin-bm/tap/canirun
+# Needs a GitHub repo Kavin-bm/homebrew-tap and a HOMEBREW_TAP_TOKEN secret.
 homebrew_casks:
   - name: canirun
     repository:
       owner: kavinbm
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
-    homepage: https://github.com/kavinbm16/canirun
+    homepage: https://github.com/Kavin-bm/canirun
     description: Will this LLM run on my machine, and how fast? Check before you download.
     license: MIT
     binaries: [canirun]

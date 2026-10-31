@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/kavinbm16/canirun/internal/bench"
-	"github.com/kavinbm16/canirun/internal/hw"
+	"github.com/Kavin-bm/canirun/internal/bench"
+	"github.com/Kavin-bm/canirun/internal/hw"
 )
 
 func session(t *testing.T, lines ...string) []map[string]any {

@@ -9,10 +9,10 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/kavinbm16/canirun/internal/bench"
-	"github.com/kavinbm16/canirun/internal/estimate"
-	"github.com/kavinbm16/canirun/internal/hw"
-	"github.com/kavinbm16/canirun/internal/model"
+	"github.com/Kavin-bm/canirun/internal/bench"
+	"github.com/Kavin-bm/canirun/internal/estimate"
+	"github.com/Kavin-bm/canirun/internal/hw"
+	"github.com/Kavin-bm/canirun/internal/model"
 )
 
 // Estimate is the full answer for one model on one machine.

@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/kavinbm16/canirun/models"
+	"github.com/Kavin-bm/canirun/models"
 )
 
 // Result is a MEASURED benchmark contributed to models/results/*.yaml,

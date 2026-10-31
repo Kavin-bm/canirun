@@ -4,13 +4,13 @@ Copy everything in the box into Claude Code, Codex, Gemini CLI, Cursor or any ag
 
 ```text
 Help me find out which local AI models (LLMs) my computer can run, using the
-open-source tool canirun (https://github.com/kavinbm16/canirun). I am not
+open-source tool canirun (https://github.com/Kavin-bm/canirun). I am not
 technical, so explain everything in plain, friendly words.
 
 1. Check whether `canirun` is installed (`canirun version`). If it is not, tell
    me the install command for my system and ask me before running it:
-   - macOS/Linux:  curl -fsSL https://raw.githubusercontent.com/kavinbm16/canirun/main/install.sh | sh
-   - With Go:      go install github.com/kavinbm16/canirun/cmd/canirun@latest
+   - macOS/Linux:  curl -fsSL https://raw.githubusercontent.com/Kavin-bm/canirun/main/install.sh | sh
+   - With Go:      go install github.com/Kavin-bm/canirun/cmd/canirun@latest
 2. Run `canirun hw --json` and describe my computer in one or two sentences
    (chip, memory, whether it has a graphics card that helps).
 3. Run `canirun recommend --json` and tell me the 3-5 best models for me.

@@ -1,15 +1,15 @@
 #!/bin/sh
-# canirun installer: curl -fsSL https://raw.githubusercontent.com/kavinbm16/canirun/main/install.sh | sh
+# canirun installer: curl -fsSL https://raw.githubusercontent.com/Kavin-bm/canirun/main/install.sh | sh
 #
 # Downloads the release archive for your OS/CPU from GitHub, verifies its
 # SHA-256 against checksums.txt, and installs the single binary.
 # Environment:
 #   CANIRUN_VERSION      version to install (default: latest release)
 #   CANIRUN_INSTALL_DIR  where to put the binary (default: /usr/local/bin if writable, else ~/.local/bin)
-#   CANIRUN_BASE_URL     release base URL (default: https://github.com/kavinbm16/canirun/releases)
+#   CANIRUN_BASE_URL     release base URL (default: https://github.com/Kavin-bm/canirun/releases)
 set -eu
 
-BASE="${CANIRUN_BASE_URL:-https://github.com/kavinbm16/canirun/releases}"
+BASE="${CANIRUN_BASE_URL:-https://github.com/Kavin-bm/canirun/releases}"
 
 say() { printf '%s\n' "$*" >&2; }
 die() { say "canirun install: $*"; exit 1; }

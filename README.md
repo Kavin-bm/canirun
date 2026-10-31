@@ -23,9 +23,9 @@ go run ./cmd/canirun qwen3:14b   # or straight in the terminal
 One-line installs, **available once the first GitHub release is published** (configs are in the repo and tested locally):
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/kavinbm16/canirun/main/install.sh | sh   # macOS / Linux, verifies SHA-256
-brew install kavinbm16/tap/canirun                                                     # Homebrew
-go install github.com/kavinbm16/canirun/cmd/canirun@latest                             # Go
+curl -fsSL https://raw.githubusercontent.com/Kavin-bm/canirun/main/install.sh | sh   # macOS / Linux, verifies SHA-256
+brew install Kavin-bm/tap/canirun                                                     # Homebrew
+go install github.com/Kavin-bm/canirun/cmd/canirun@latest                             # Go
 ```
 
 Windows: download the `.zip` from Releases (coming with the first release).
@@ -114,7 +114,7 @@ canirun qwen3:32b --json >/dev/null && ollama pull qwen3:32b   # only download i
 ## Paste this into your coding agent
 
 ```text
-Use canirun (https://github.com/kavinbm16/canirun) to check which local LLMs my
+Use canirun (https://github.com/Kavin-bm/canirun) to check which local LLMs my
 computer can run. Run `canirun hw --json` and `canirun recommend --json`, then
 explain the 3-5 best options in plain words: what each is good for, memory
 needed, and speed (30+ tok/s faster than reading, 10-30 comfortable, under 4
