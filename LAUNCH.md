@@ -8,7 +8,8 @@ first release (binaries + `brew` + `curl | sh`) is live.
 ## X / Twitter thread
 
 **1/**
-I downloaded a 40 GB model last month. It loaded, swapped, and crawled at 2 tokens/sec on my 24 GB MacBook.
+[YOUR STORY, 1-2 lines, true details only. Shape: "I downloaded a <size> GB model, it
+<didn't load / crawled at N tok/s> on my <machine>."]
 
 The answer was knowable before I hit download. So I built a tool that tells you in one second.
 
@@ -51,8 +52,8 @@ Built for agents too: `--json` everywhere, stable exit codes, and an MCP server.
 
 **Body:**
 
-Hi HN, I kept downloading local models that turned out to be too big or too slow for my
-laptop. The numbers exist, but they're scattered across blog posts, spreadsheets and web
+Hi HN, [one true sentence about your own experience, e.g. which model was too big or too
+slow for your laptop]. The numbers exist, but they're scattered across blog posts, spreadsheets and web
 calculators, and a website can't see your actual GPU or measure anything.
 
 canirun is a single Go binary (stdlib only) that:
