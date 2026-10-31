@@ -5,11 +5,15 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
-  build:
+  test:
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -18,7 +22,33 @@ jobs:
           go-version-file: go.mod
       - name: Build
         run: go build ./...
-      - name: Vet
-        run: go vet ./...
       - name: Test
-        run: go test ./...
+        # -race needs cgo; keep Windows on the plain test run.
+        run: go test ${{ matrix.os != 'windows-latest' && '-race' || '' }} ./...
+      - name: Smoke test (hw, estimate, validate)
+        shell: bash
+        run: |
+          go run ./cmd/canirun hw
+          go run ./cmd/canirun llama3.2:3b --json > /dev/null || [ $? -eq 3 ]
+          go run ./cmd/canirun validate
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: gofmt
+        run: test -z "$(gofmt -l .)" || (gofmt -l . && exit 1)
+      - name: go vet
+        run: go vet ./...
+      - name: staticcheck
+        run: go run honnef.co/go/tools/cmd/staticcheck@latest ./...
+      - name: install.sh syntax
+        run: sh -n install.sh
+      - name: GoReleaser config
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          version: "~> v2"
+          args: check
