@@ -67,6 +67,9 @@ func Parse(data string) (Model, error) {
 			m.ContextMax, err = strconv.Atoi(v)
 		case "hf_repo":
 			m.HFRepo = v
+		default:
+			// Typos like "kv_head" must fail loudly, not be silently ignored.
+			return m, fmt.Errorf("unknown field %q", k)
 		}
 		if err != nil {
 			return m, fmt.Errorf("%s: %w", k, err)
@@ -105,7 +108,7 @@ var sizeRe = regexp.MustCompile(`^(\d+(?:\.\d+)?)b$`)
 // Resolve finds a model by id or alias (case-insensitive), or treats "13b"
 // as a generic 13-billion-parameter model.
 func Resolve(name string) (Model, error) {
-	n := strings.ToLower(strings.TrimSpace(name))
+	n := strings.TrimSuffix(strings.ToLower(strings.TrimSpace(name)), ":latest")
 	cat, err := Catalog()
 	if err != nil {
 		return Model{}, err
@@ -121,8 +124,10 @@ func Resolve(name string) (Model, error) {
 		}
 	}
 	if s := sizeRe.FindStringSubmatch(n); s != nil {
-		p, _ := strconv.ParseFloat(s[1], 64)
-		return Generic(p), nil
+		if p, _ := strconv.ParseFloat(s[1], 64); p > 0 && p <= 10000 {
+			return Generic(p), nil
+		}
+		return Model{}, fmt.Errorf("model size %q is out of range (use something like 7b or 70b)", name)
 	}
 	return Model{}, fmt.Errorf("unknown model %q; run `canirun list` to see the catalog, or pass a size like `canirun 13b`", name)
 }

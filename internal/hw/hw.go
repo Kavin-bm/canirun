@@ -3,13 +3,16 @@ package hw
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // Info is the detected hardware. Byte sizes are 0 when unknown.
@@ -43,8 +46,14 @@ func Detect() Info {
 	return info
 }
 
+// cmdTimeout bounds every external probe: a wedged GPU driver can make
+// nvidia-smi hang forever, and detection must never hang the CLI.
+const cmdTimeout = 5 * time.Second
+
 func run(name string, args ...string) string {
-	out, err := exec.Command(name, args...).Output()
+	ctx, cancel := context.WithTimeout(context.Background(), cmdTimeout)
+	defer cancel()
+	out, err := exec.CommandContext(ctx, name, args...).Output()
 	if err != nil {
 		return ""
 	}
@@ -88,13 +97,10 @@ func ParseSPDisplays(data []byte, info *Info) {
 	if s, ok := d["sppci_cores"].(string); ok {
 		info.GPUCores, _ = strconv.Atoi(s)
 	}
-	for _, k := range []string{"spdisplays_vram", "spdisplays_vram_shared"} {
-		if s, ok := d[k].(string); ok {
-			if b := ParseSize(s); b > 0 {
-				info.GPUMemBytes = b
-				break
-			}
-		}
+	// Only dedicated VRAM counts. "spdisplays_vram_shared" (Intel iGPU) is
+	// carved out of system RAM and must not be treated as a discrete GPU.
+	if s, ok := d["spdisplays_vram"].(string); ok {
+		info.GPUMemBytes = ParseSize(s)
 	}
 }
 
@@ -130,10 +136,14 @@ func detectLinux(info *Info) {
 			return
 		}
 	}
-	// AMD (amdgpu) exposes VRAM size in sysfs.
-	if files, _ := filepath.Glob("/sys/class/drm/card*/device/mem_info_vram_total"); len(files) > 0 {
-		if b, err := os.ReadFile(files[0]); err == nil {
-			info.GPUMemBytes, _ = strconv.ParseUint(strings.TrimSpace(string(b)), 10, 64)
+	// AMD (amdgpu) exposes VRAM size in sysfs. Take the largest card: card0
+	// is often a small integrated GPU.
+	files, _ := filepath.Glob("/sys/class/drm/card*/device/mem_info_vram_total")
+	for _, f := range files {
+		if b, err := os.ReadFile(f); err == nil {
+			if n, _ := strconv.ParseUint(strings.TrimSpace(string(b)), 10, 64); n > info.GPUMemBytes {
+				info.GPUMemBytes = n
+			}
 		}
 	}
 	if out := run("lspci"); out != "" {
@@ -169,19 +179,40 @@ func ParseCPUInfoModel(data string) string {
 	return ""
 }
 
-// ParseNvidiaSMI parses the first line of
+// ParseNvidiaSMI parses
 // `nvidia-smi --query-gpu=name,memory.total --format=csv,noheader,nounits`.
+// With several GPUs, VRAM is summed (llama.cpp and Ollama split layers
+// across cards) and the name becomes "2x NVIDIA GeForce RTX 3090".
 func ParseNvidiaSMI(out string) (name string, mem uint64, ok bool) {
-	line := strings.SplitN(out, "\n", 2)[0]
-	name, memStr, found := strings.Cut(line, ",")
-	if !found {
+	var names []string
+	for _, line := range strings.Split(strings.TrimSpace(out), "\n") {
+		n, memStr, found := strings.Cut(line, ",")
+		if !found {
+			continue
+		}
+		mib, err := strconv.ParseUint(strings.TrimSpace(memStr), 10, 64)
+		if err != nil {
+			continue
+		}
+		names = append(names, strings.TrimSpace(n))
+		mem += mib << 20
+	}
+	if len(names) == 0 {
 		return "", 0, false
 	}
-	mib, err := strconv.ParseUint(strings.TrimSpace(memStr), 10, 64)
-	if err != nil {
-		return "", 0, false
+	name = names[0]
+	if len(names) > 1 {
+		same := true
+		for _, n := range names {
+			same = same && n == names[0]
+		}
+		if same {
+			name = fmt.Sprintf("%dx %s", len(names), names[0])
+		} else {
+			name = strings.Join(names, " + ")
+		}
 	}
-	return strings.TrimSpace(name), mib << 20, true
+	return name, mem, true
 }
 
 // ParseLspciGPU returns the first VGA/3D controller description.

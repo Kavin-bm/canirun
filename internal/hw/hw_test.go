@@ -13,6 +13,10 @@ func TestParsers(t *testing.T) {
 	if !ok || name != "NVIDIA GeForce RTX 4090" || mem != 24564<<20 {
 		t.Fatalf("nvidia %q %d %v", name, mem, ok)
 	}
+	name, mem, ok = ParseNvidiaSMI("NVIDIA GeForce RTX 3090, 24576\nNVIDIA GeForce RTX 3090, 24576\n")
+	if !ok || name != "2x NVIDIA GeForce RTX 3090" || mem != 2*24576<<20 {
+		t.Fatalf("multi nvidia %q %d %v", name, mem, ok)
+	}
 	if got := ParseLspciGPU("00:02.0 VGA compatible controller: Intel Corporation UHD Graphics 620 (rev 07)"); got != "Intel Corporation UHD Graphics 620 (rev 07)" {
 		t.Fatalf("lspci %q", got)
 	}
@@ -26,5 +30,13 @@ func TestParseSPDisplays(t *testing.T) {
 	ParseSPDisplays([]byte(`{"SPDisplaysDataType":[{"sppci_model":"Apple M4 Pro","sppci_cores":"20"}]}`), &info)
 	if info.GPU != "Apple M4 Pro" || info.GPUCores != 20 {
 		t.Fatalf("%+v", info)
+	}
+}
+
+func TestParseSPDisplaysIgnoresSharedVRAM(t *testing.T) {
+	var info Info
+	ParseSPDisplays([]byte(`{"SPDisplaysDataType":[{"sppci_model":"Intel Iris Plus","spdisplays_vram_shared":"1536 MB"}]}`), &info)
+	if info.GPUMemBytes != 0 {
+		t.Fatalf("shared iGPU memory counted as VRAM: %+v", info)
 	}
 }

@@ -124,7 +124,8 @@ func Estimate(m model.Model, q Quant, ctx int, b Budget) Result {
 	case r.TotalBytes <= b.TotalBytes:
 		r.Verdict = Partial
 		if b.GPUBytes > 0 {
-			r.GPUFraction = math.Round(float64(b.GPUBytes)/float64(r.TotalBytes)*100) / 100
+			// Floor, not round: a partial result must never read as 100% on GPU.
+			r.GPUFraction = math.Floor(float64(b.GPUBytes)/float64(r.TotalBytes)*100) / 100
 		}
 	default:
 		r.Verdict = No
