@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>canirun</title>
+<meta name="color-scheme" content="dark light">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2322c55e'/%3E%3Cpath d='M9 17l5 5 9-11' stroke='%23052e16' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to results</a>
+<header class="top">
+  <div class="brand"><span class="logo" aria-hidden="true">✓</span><span>canirun</span><span class="ver" id="ver"></span></div>
+  <button id="theme" class="ghost" type="button" aria-label="Switch to light theme">☀︎</button>
+</header>
+
+<main id="main">
+  <section class="intro">
+    <h1>Will it run on <em id="chipName">this machine</em>?</h1>
+    <p>Pick a model. canirun checks memory and speed against your real hardware before you download 20&nbsp;GB. Numbers are labelled <span class="tag est">ESTIMATE</span> until you <span class="tag meas">MEASURE</span> them.</p>
+  </section>
+
+  <div class="grid">
+    <section class="card" aria-labelledby="hwTitle">
+      <h2 id="hwTitle">Your machine</h2>
+      <dl id="hw" class="kv"><div><dt>Detecting…</dt><dd></dd></div></dl>
+    </section>
+
+    <section class="card" aria-labelledby="pickTitle">
+      <h2 id="pickTitle">Model</h2>
+      <form id="pick" class="pick" autocomplete="off">
+        <label for="model">Model name or Ollama tag</label>
+        <input id="model" list="modelList" placeholder="e.g. qwen3:14b" spellcheck="false" required>
+        <datalist id="modelList"></datalist>
+        <label for="ctx">Context length</label>
+        <select id="ctx">
+          <option value="4096">4K tokens (short chats)</option>
+          <option value="8192" selected>8K tokens (default)</option>
+          <option value="32768">32K tokens (long documents)</option>
+          <option value="131072">128K tokens (huge context)</option>
+        </select>
+        <button type="submit">Check</button>
+      </form>
+    </section>
+  </div>
+
+  <section id="verdict" class="card verdict" aria-live="polite" hidden></section>
+
+  <section id="speedCard" class="card" aria-labelledby="speedTitle" hidden>
+    <div class="row">
+      <h2 id="speedTitle">Speed: estimated vs measured</h2>
+      <span class="legend"><i class="sw est"></i>ESTIMATE <i class="sw meas"></i>MEASURED</span>
+    </div>
+    <div id="chart" class="chart" role="img"></div>
+    <div class="bench">
+      <label for="ollamaModel">Measure on this machine with Ollama</label>
+      <div class="benchRow">
+        <select id="ollamaModel" disabled><option>Looking for Ollama…</option></select>
+        <button id="benchBtn" type="button" disabled>Measure</button>
+      </div>
+      <p id="benchNote" class="muted small">Runs 1 warm-up and 3 short generations locally. Never downloads a model; Ollama cloud models are skipped.</p>
+      <div id="benchConfirm" class="confirm" hidden>
+        <p>This keeps your GPU busy for about 10–60 seconds. Nothing is downloaded or sent anywhere.</p>
+        <button id="benchGo" type="button">Run benchmark</button>
+        <button id="benchCancel" type="button" class="ghost">Cancel</button>
+      </div>
+      <p id="benchStatus" class="small" role="status"></p>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="recTitle">
+    <div class="row">
+      <h2 id="recTitle">What runs well here</h2>
+      <span class="tag est">ESTIMATE</span>
+    </div>
+    <div class="tableWrap"><table id="recs"><caption class="sr">Catalog models that run on this machine</caption><thead><tr><th scope="col">Model</th><th scope="col">Quant</th><th scope="col">Needs</th><th scope="col">Speed</th><th scope="col">Verdict</th></tr></thead><tbody><tr><td colspan="5" class="muted">Loading…</td></tr></tbody></table></div>
+  </section>
+
+  <section id="shareCard" class="card" aria-labelledby="shareTitle" hidden>
+    <div class="row">
+      <h2 id="shareTitle">Share your result</h2>
+    </div>
+    <canvas id="card" width="1200" height="630" aria-label="Shareable result card preview"></canvas>
+    <div class="actions">
+      <button id="png" type="button">Download PNG</button>
+      <button id="copy" type="button" class="ghost">Copy text</button>
+      <span id="shareStatus" class="small muted" role="status"></span>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Runs on 127.0.0.1 only. No telemetry, no accounts, no network calls. <a href="https://github.com/kavinbm/canirun">Source</a></p>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>
